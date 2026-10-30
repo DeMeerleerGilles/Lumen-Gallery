@@ -1,0 +1,28 @@
+{
+  "name": "lumen-gallery",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A self-hosted automated photo gallery generator",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "tsx watch src/main.ts",
+    "scan": "tsx src/scan.ts"
+  },
+  "dependencies": {
+    "@fastify/static": "^8.2.0",
+    "better-sqlite3": "^11.8.1",
+    "chokidar": "^4.0.3",
+    "dotenv": "^16.4.7",
+    "exifr": "^7.1.3",
+    "fastify": "^5.2.1",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.13.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}

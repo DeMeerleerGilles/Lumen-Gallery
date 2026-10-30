@@ -1,0 +1,19 @@
+services:
+  lumen-gallery:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      PHOTOS_DIR: /photos
+      DATA_DIR: /data
+      CACHE_DIR: /cache
+      SCAN_INTERVAL_MS: 300000
+      SITE_TITLE: Lumen Gallery
+      SITE_TAGLINE: Every memory, beautifully arranged.
+      ACCENT_COLOR: "#d9a86c"
+    volumes:
+      - ./photos:/photos:ro
+      - ./data:/data
+      - ./cache:/cache
+    restart: unless-stopped
