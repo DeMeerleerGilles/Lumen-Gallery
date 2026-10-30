@@ -4,3 +4,17 @@ dist
 data
 cache
 *.db
+
+# Local photo library
+photos/*
+!photos/.gitkeep
+
+# Image files anywhere in the repository
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.avif
+*.gif
+*.tif
+*.tiff
