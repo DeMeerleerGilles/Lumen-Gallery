@@ -1,27 +1,30 @@
 # Lumen Gallery
 
-> Turn a folder of photos into a beautiful, self-hosted gallery.
+> Turn a folder of photos into a beautiful, modern, self-hosted gallery.
 
 Lumen Gallery watches a local photo folder, organizes images into albums, creates
-web-friendly versions, reads available camera metadata, and serves everything
-through a responsive gallery. It is designed for personal archives, family
-sharing, trips, and small client galleries.
+web-friendly versions, reads camera metadata, and serves everything
+through a responsive, luminous gallery. It is designed for personal archives, family
+sharing, trips, and client proofing.
 
-## What you get
+---
 
-- **Automatic albums** — subfolders become albums without importing or tagging
-  photos manually.
-- **Fast browsing** — thumbnails and responsive WebP images are generated
-  automatically.
-- **Photo details** — camera, lens, aperture, shutter speed, ISO, date taken,
-  and GPS coordinates are shown when they are present in EXIF data.
-- **Simple lightbox** — open a photo full-screen and inspect its metadata.
-- **Self-hosted storage** — your originals stay in your own mounted photo
-  directory.
-- **Resilient scanning** — unreadable folders or damaged images are skipped and
-  logged rather than stopping the entire gallery.
+## ✨ Features
 
-## Quick start with Docker
+- **Modern Aesthetic with Luminous Gradients** — Ambient glow meshes, frosted glassmorphism panels, and multi-stop brand gradients in Obsidian Dark and Porcelain Light themes.
+- **Interactive Travel Maps** — Explore photos on an interactive Leaflet map with glowing pins and thumbnail previews.
+- **Offline Reverse Geocoding** — Automatically translates GPS coordinates into cities and countries (e.g., *Palermo, Italy*) with zero external API calls.
+- **Client Proofing & Selection Tray** — Favorite photos with a heart icon, review selections in a floating dock, copy comma-separated filenames to the clipboard for photographers, or download selected photos directly.
+- **One-Click ZIP Downloads** — Stream full albums or client-selected photos as compressed `.zip` archives.
+- **Pro Lightbox & Slideshow** — Fullscreen mode, automatic slideshow playback (Space), filmstrip thumbnail carousel, touch gestures, and collapsible EXIF HUD.
+- **Folder Stories via `album.md`** — Drop an optional `album.md`, `album.yaml`, or `album.json` into any photo directory to set custom titles, cover photos, editorial stories, tags, and custom sort order without touching a database.
+- **Instant Blur-Up Loading** — Tiny base64 placeholders and dominant color backdrops prevent layout shift.
+- **Live Search & Camera Filters** — Filter in real-time by search query, camera model, or favorites, with instant sorting by date or filename.
+- **Self-Hosted & Non-Destructive** — Originals stay strictly read-only in your mounted directory.
+
+---
+
+## 🚀 Quick start with Docker
 
 ### 1. Download the project
 
@@ -30,24 +33,23 @@ git clone https://github.com/DeMeerleerGilles/Lumen-Gallery.git
 cd Lumen-Gallery
 ```
 
-### 2. Create the folders used by the container
+### 2. Create folders and add photos
 
 ```sh
 mkdir -p photos data cache
 ```
 
-Put your photos inside `photos`, grouped into folders. For example:
+Organize your photos inside `photos`:
 
 ```text
 photos/
-├── 2025-08-01_Italy/
+├── 2025_Italy/
+│   ├── album.md             <-- Optional: title, story, custom cover
 │   ├── IMG_0001.jpg
 │   └── IMG_0002.jpg
 └── Family/
-    └── birthday.png
+    └── birthday.jpg
 ```
-
-Each folder containing images appears as an album. Nested folders are supported.
 
 ### 3. Start Lumen Gallery
 
@@ -57,18 +59,30 @@ docker compose up -d --build
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The first scan runs when the container starts. New, changed, and deleted images
-are picked up automatically while the container is running.
+---
 
-To stop the gallery:
+## 📝 Customizing an Album with `album.md`
 
-```sh
-docker compose down
+You can place an optional `album.md` file in any album folder:
+
+```markdown
+---
+title: "Summer in Tuscany"
+description: "A breathtaking road trip through Florence, Siena, and the rolling hills of Val d'Orcia."
+cover: IMG_0042.jpg
+tags: italy, travel, summer
+---
+
+Optional long-form editorial intro text about the trip...
 ```
 
-## Configuration
+Lumen automatically displays the editorial intro above the gallery and uses `cover` as the album thumbnail.
 
-Copy `.env.example` to `.env` when you want to customize the local setup:
+---
+
+## ⚙️ Configuration
+
+Copy `.env.example` to `.env` when you want to customize the setup:
 
 ```sh
 cp .env.example .env
@@ -84,116 +98,43 @@ cp .env.example .env
 | `IMAGE_QUALITY` | `82` | WebP quality from 1 to 100 |
 | `SITE_TITLE` | `Lumen Gallery` | Title displayed in the gallery |
 | `SITE_TAGLINE` | `Every memory, beautifully arranged.` | Hero message shown on the home page |
-| `ACCENT_COLOR` | `#d9a86c` | Six-digit hex color for buttons and highlights |
+| `ACCENT_COLOR` | `#d9a86c` | Hex color for buttons and highlights |
+| `ENABLE_DOWNLOADS` | `true` | Allow full-album and selected-photo ZIP downloads |
+| `ENABLE_MAP` | `true` | Enable interactive Leaflet travel maps |
+| `ENABLE_PROOFING` | `true` | Enable favorites selection and client proofing tray |
+| `ADMIN_PASSWORD` | unset | Optional password for the `/admin` panel using HTTP Basic Auth |
 
-The Docker Compose setup already maps these locations to persistent folders:
+The `/admin` panel manages the gallery name, opening line, accent colour, downloads, maps, and
+proofing. Managed settings are persisted in `data/gallery-settings.json` and override the
+corresponding environment defaults. Set `ADMIN_PASSWORD` before exposing the gallery beyond a
+trusted local network.
 
-- `./photos` → original images, mounted read-only
-- `./data` → SQLite database
-- `./cache` → generated thumbnails and WebP files
+---
 
-Do not delete `data` or `cache` unless you want to rebuild the gallery database
-and generated image variants.
+## 💻 Local Development
 
-## Local development
-
-Use Node.js 22 or newer. Native dependencies used by SQLite and image processing
-may require your operating system's build tools.
+Requires Node.js 22 or newer.
 
 ```sh
 npm install
 npm run dev
 ```
 
-The local development server uses `photos`, `data`, and `cache` in the project
-directory by default. For a production-style local run:
+For production builds:
 
 ```sh
 npm run build
 npm start
 ```
 
-You can run a one-time scan without starting the web server:
+Run a one-time media scan:
 
 ```sh
 npm run scan
 ```
 
-## Troubleshooting
+---
 
-### Albums are empty
-
-Check that:
-
-1. Images are inside the configured photos directory.
-2. The files use a supported extension: `.jpg`, `.jpeg`, `.png`, `.webp`,
-   `.avif`, `.tif`, or `.tiff`.
-3. The container can read the mounted directory.
-
-View scanner output with:
-
-```sh
-docker compose logs -f lumen-gallery
-```
-
-### I changed an image but still see the old version
-
-The browser may be caching the generated image. Refresh the page. If the issue
-continues, stop the container, remove the relevant files from `cache`, and start
-it again:
-
-```sh
-docker compose down
-rm -rf cache/*
-docker compose up -d
-```
-
-### I need to rebuild everything
-
-The database contains indexed album and photo metadata. To rebuild both the
-database and generated images:
-
-```sh
-docker compose down
-rm -rf data/* cache/*
-docker compose up -d
-```
-
-Your originals in `photos` are not affected by these commands.
-
-## Personalize your view
-
-Select **Customize** in the top-right corner of any page to choose:
-
-- Dark or light theme
-- Spacious or compact gallery spacing
-- Whether file names appear below photos
-
-These preferences are saved in your browser and do not change the gallery for
-other visitors. The sun button next to **Customize** is a quick theme switch.
-
-## Privacy notes
-
-Lumen Gallery is self-hosted, but it does not currently provide authentication
-or album-level access control. Keep the service on a trusted network, or place
-it behind your own reverse proxy and authentication layer before exposing it to
-the public internet.
-
-GPS coordinates can be included in photo metadata and may be displayed by the
-gallery. Remove sensitive EXIF data from originals before sharing them if
-location privacy matters.
-
-## Project structure
-
-| Path | Purpose |
-| --- | --- |
-| [`src/scanner.ts`](./src/scanner.ts) | Finds images, extracts EXIF, and creates variants |
-| [`src/database.ts`](./src/database.ts) | Stores album and photo metadata in SQLite |
-| [`src/server.ts`](./src/server.ts) | Serves the gallery and generated media |
-| [`src/main.ts`](./src/main.ts) | Starts the server, watcher, and periodic scanner |
-| [`public/assets/`](./public/assets/) | Gallery styling and lightbox behavior |
-| [`docker-compose.yml`](./docker-compose.yml) | Recommended Docker deployment |
-
-## License
+## 📄 License
 
 See [LICENSE](./LICENSE).
